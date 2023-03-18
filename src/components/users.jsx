@@ -3,49 +3,25 @@ import api from "../api"
 
 const Users = () => {
   const [users, setUsers] = useState(api.users.fetchAll())
-  const [usersLenght, setUsersLenght] = useState(api.users.fetchAll().length)
 
   const handleDelete = (userID) => {
-    const buttonUserId = userID._id
-    const trMas = document.getElementsByClassName(buttonUserId)
-    const tr = trMas[0]
-    setUsersLenght((el) => el - 1)
-    tr.remove()
+    setUsers(users.filter((user) => user._id !== userID._id))
   }
 
-  const renderPhrase = (number) => {
-    return number === 2 || number === 3 || number === 4
-      ? "Человека тусанут с тобой сегодня"
-      : "Человек тусанет с тобой сегодня"
-  }
-
-  const setUsersQualities = (userID) => {
-    return userID.qualities.map((qualitiesId) => {
-      const qualitiesName = qualitiesId.name
-      let qualitiesClassName = ""
-
-      qualitiesName === "Нудила" &&
-        (qualitiesClassName = "badge bg-primary m-1")
-
-      qualitiesName === "Странный" &&
-        (qualitiesClassName = "badge bg-secondary m-1")
-
-      qualitiesName === "Троль" && (qualitiesClassName = "badge bg-success m-1")
-
-      qualitiesName === "Алкоголик" &&
-        (qualitiesClassName = "badge bg-danger m-1")
-
-      qualitiesName === "Красавчик" &&
-        (qualitiesClassName = "badge bg-info m-1")
-
-      qualitiesName === "Неуверенный" &&
-        (qualitiesClassName = "badge bg-dark m-1")
-
-      return <>{<span className={qualitiesClassName}>{qualitiesName}</span>}</>
+  const renderUsersQualities = (user) => {
+    return user.qualities.map((qualitiesId) => {
+      return (
+        <span
+          key={qualitiesId._id}
+          className={`badge bg-${qualitiesId.color} m-1`}
+        >
+          {qualitiesId.name}
+        </span>
+      )
     })
   }
 
-  const setUsersProfession = (userID) => {
+  const renderUsersProfession = (userID) => {
     const professionId = userID.profession._id
     const professionName = userID.profession.name
     return (
@@ -55,7 +31,7 @@ const Users = () => {
     )
   }
 
-  const setUsersCompletedMeetings = (userID) => {
+  const renderUsersCompletedMeetings = (userID) => {
     const completedMeetings = userID.completedMeetings
     return (
       <>
@@ -64,7 +40,7 @@ const Users = () => {
     )
   }
 
-  const setUsersRate = (userID) => {
+  const renderUsersRate = (userID) => {
     const rate = userID.rate
     return (
       <>
@@ -73,62 +49,51 @@ const Users = () => {
     )
   }
 
-  const setUsersInTable = () => {
-    return users.map((usersID) => {
+  const renderUsersInTable = () => {
+    return users.map((user) => {
       return (
-        <>
-          <tr className={usersID._id}>
-            <th>{usersID.name}</th>
-            <td>{setUsersQualities(usersID)}</td>
-            <td>{setUsersProfession(usersID)}</td>
-            <td>{setUsersCompletedMeetings(usersID)}</td>
-            <td>{setUsersRate(usersID)}</td>
-            <td>
-              <button
-                className="btn btn-danger"
-                onClick={() => {
-                  handleDelete(usersID)
-                }}
-              >
-                delete
-              </button>
-            </td>
-          </tr>
-        </>
+        <tr key={user._id} className={user._id}>
+          <th>{user.name}</th>
+          <td>{renderUsersQualities(user)}</td>
+          <td>{renderUsersProfession(user)}</td>
+          <td>{renderUsersCompletedMeetings(user)}</td>
+          <td>{renderUsersRate(user)}</td>
+          <td>
+            <button
+              className="btn btn-danger"
+              onClick={() => {
+                handleDelete(user)
+              }}
+            >
+              delete
+            </button>
+          </td>
+        </tr>
       )
     })
   }
 
-  const handleMessage = () => {
-    return usersLenght !== 0 ? (
-      <>
-        <h1 className="badge bg-primary">
-          {usersLenght} {renderPhrase(usersLenght)}
-        </h1>
-      </>
+  const renderMessage = () => {
+    return users.length !== 0 ? (
+      <h1 className="badge bg-primary">
+        {users.length} {renderPhrase(users.length)}
+      </h1>
     ) : (
-      setRedMessage()
+      <h1 className="badge bg-danger">Никто с тобой не тусанет</h1>
     )
   }
 
-  const setRedMessage = () => {
-    const tableMas = document.getElementsByClassName("table")
-    const table = tableMas[0]
-    table.classList.add("d-none")
-    return (
-      <>
-        <div>
-          <h1 className="badge bg-danger">Никто с тобой не тусанет</h1>
-        </div>
-      </>
-    )
+  const renderPhrase = (number) => {
+    return number === 2 || number === 3 || number === 4
+      ? "Человека тусанут с тобой сегодня"
+      : "Человек тусанет с тобой сегодня"
   }
 
-  const setTable = () => {
-    return (
-      <>
-        {handleMessage()}
+  return (
+    <>
+      {renderMessage()}
 
+      {users.length > 0 && (
         <table className="table">
           <thead>
             <tr>
@@ -140,12 +105,11 @@ const Users = () => {
               <th scope="col"></th>
             </tr>
           </thead>
-          <tbody>{setUsersInTable()}</tbody>
+          <tbody>{renderUsersInTable()}</tbody>
         </table>
-      </>
-    )
-  }
-  return setTable()
+      )}
+    </>
+  )
 }
 
 export default Users
