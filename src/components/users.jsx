@@ -4,8 +4,8 @@ import api from "../api"
 const Users = () => {
   const [users, setUsers] = useState(api.users.fetchAll())
 
-  const handleDelete = (userID) => {
-    setUsers(users.filter((user) => user._id !== userID._id))
+  const handleDelete = (user) => {
+    setUsers(users.filter((userID) => userID._id !== user._id))
   }
 
   const renderUsersQualities = (user) => {
