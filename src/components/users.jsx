@@ -21,9 +21,9 @@ const Users = () => {
     })
   }
 
-  const renderUsersProfession = (userID) => {
-    const professionId = userID.profession._id
-    const professionName = userID.profession.name
+  const renderUsersProfession = (user) => {
+    const professionId = user.profession._id
+    const professionName = user.profession.name
     return (
       <>
         <span id={professionId}>{professionName}</span>
@@ -31,8 +31,8 @@ const Users = () => {
     )
   }
 
-  const renderUsersCompletedMeetings = (userID) => {
-    const completedMeetings = userID.completedMeetings
+  const renderUsersCompletedMeetings = (user) => {
+    const completedMeetings = user.completedMeetings
     return (
       <>
         <span>{completedMeetings}</span>
@@ -40,8 +40,8 @@ const Users = () => {
     )
   }
 
-  const renderUsersRate = (userID) => {
-    const rate = userID.rate
+  const renderUsersRate = (user) => {
+    const rate = user.rate
     return (
       <>
         <span>{rate}</span>
