@@ -14,7 +14,7 @@ const User = ({
     onToggleBookMark
 }) => {
     return (
-        <tr>
+        <tr key={_id}>
             <td>{name}</td>
             <td>
                 {qualities.map((qual) => (
