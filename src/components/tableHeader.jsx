@@ -1,15 +1,6 @@
-import { React, useState, useEffect } from "react"
+import React from "react"
 import PropTypes from "prop-types"
 const TableHeader = ({ onSort, selectedSort, columns }) => {
-    const [activeHeader, setActiveHeader] = useState({
-        name: "name",
-        order: "asc"
-    })
-
-    useEffect(() => {
-        setActiveHeader({ name: selectedSort.path, order: selectedSort.order })
-    }, [selectedSort])
-
     const handleSort = (item) => {
         if (selectedSort.path === item) {
             onSort({
@@ -20,24 +11,15 @@ const TableHeader = ({ onSort, selectedSort, columns }) => {
             onSort({ path: item, order: "asc" })
         }
     }
-
-    const renderHeader = (item) => {
-        if (item.path === activeHeader.name) {
-            if (activeHeader.order === "asc") {
-                return (
-                    <span>
-                        {item.name} <i className="bi bi-caret-up-fill"></i>
-                    </span>
-                )
+    const renderSortArrow = (selectedSort, currentPath) => {
+        if (selectedSort.path === currentPath) {
+            if (selectedSort.order === "asc") {
+                return <i className="bi bi-caret-down-fill"></i>
             } else {
-                return (
-                    <span>
-                        {item.name} <i className="bi bi-caret-down-fill"></i>
-                    </span>
-                )
+                return <i className="bi bi-caret-up-fill"></i>
             }
         }
-        return <span>{item.name}</span>
+        return null
     }
 
     return (
@@ -54,14 +36,14 @@ const TableHeader = ({ onSort, selectedSort, columns }) => {
                         {...{ role: columns[column].path && "button" }}
                         scope="col"
                     >
-                        {renderHeader(columns[column])}
+                        {columns[column].name}{" "}
+                        {renderSortArrow(selectedSort, columns[column].path)}
                     </th>
                 ))}
             </tr>
         </thead>
     )
 }
-
 TableHeader.propTypes = {
     onSort: PropTypes.func.isRequired,
     selectedSort: PropTypes.object.isRequired,
