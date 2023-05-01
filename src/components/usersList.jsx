@@ -7,11 +7,13 @@ import GroupList from "./groupList"
 import SearchStatus from "./searchStatus"
 import UserTable from "./usersTable"
 import _ from "lodash"
+import Search from "../layouts/search"
 const UsersList = () => {
     const [currentPage, setCurrentPage] = useState(1)
     const [professions, setProfession] = useState()
     const [selectedProf, setSelectedProf] = useState()
     const [sortBy, setSortBy] = useState({ path: "name", order: "asc" })
+    const [searchName, setSearchName] = useState("")
     const pageSize = 8
 
     const [users, setUsers] = useState()
@@ -40,6 +42,7 @@ const UsersList = () => {
     }, [selectedProf])
 
     const handleProfessionSelect = (item) => {
+        clearSearchName()
         setSelectedProf(item)
     }
 
@@ -50,6 +53,21 @@ const UsersList = () => {
         setSortBy(item)
     }
 
+    const clearFilter = () => {
+        setSelectedProf()
+    }
+
+    const clearSearchName = () => {
+        setSearchName("")
+    }
+
+    const handleSearchName = (e) => {
+        if (selectedProf) {
+            clearFilter()
+        }
+        setSearchName(e.target.value)
+    }
+
     if (users) {
         const filteredUsers = selectedProf
             ? users.filter(
@@ -57,7 +75,9 @@ const UsersList = () => {
                       JSON.stringify(user.profession) ===
                       JSON.stringify(selectedProf)
               )
-            : users
+            : users.filter((user) =>
+                  user.name.toLowerCase().includes(searchName.toLowerCase())
+              )
 
         const count = filteredUsers.length
         const sortedUsers = _.orderBy(
@@ -66,9 +86,6 @@ const UsersList = () => {
             [sortBy.order]
         )
         const usersCrop = paginate(sortedUsers, currentPage, pageSize)
-        const clearFilter = () => {
-            setSelectedProf()
-        }
 
         return (
             <div className="d-flex">
@@ -84,12 +101,15 @@ const UsersList = () => {
                             onClick={clearFilter}
                         >
                             {" "}
-                            Очиститть
+                            Очистить
                         </button>
                     </div>
                 )}
                 <div className="d-flex flex-column">
                     <SearchStatus length={count} />
+
+                    <Search onSearch={handleSearchName} />
+
                     {count > 0 && (
                         <UserTable
                             users={usersCrop}
