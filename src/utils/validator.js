@@ -6,8 +6,6 @@ export function validator(data, config) {
             case "isRequired": {
                 if (typeof data === "boolean") {
                     statusValidate = !data
-                } else if (typeof data === "object") {
-                    statusValidate = data.name.trim() === ""
                 } else {
                     statusValidate = data.trim() === ""
                 }
@@ -18,24 +16,20 @@ export function validator(data, config) {
                 statusValidate = !emailRegExp.test(data)
                 break
             }
-
             case "isCapitalSymbol": {
                 const capitalRegExp = /[A-Z]+/g
                 statusValidate = !capitalRegExp.test(data)
                 break
             }
-
             case "isContainDigit": {
                 const digitRegExp = /\d+/g
                 statusValidate = !digitRegExp.test(data)
                 break
             }
-
             case "min": {
                 statusValidate = data.length < config.value
                 break
             }
-
             default:
                 break
         }
