@@ -17,22 +17,21 @@ const RegisterForm = () => {
         password: "",
         profession: "",
         sex: "male",
+        name: "",
         qualities: [],
         licence: false
     })
-    const { singUp } = useAuth()
+    const { signUp } = useAuth()
     const { qualities } = useQualities()
     const qualitiesList = qualities.map((q) => ({
         label: q.name,
         value: q._id
     }))
     const { professions } = useProfessions()
-
     const professionsList = professions.map((p) => ({
         label: p.name,
         value: p._id
     }))
-
     const [errors, setErrors] = useState({})
 
     const handleChange = (target) => {
@@ -48,6 +47,15 @@ const RegisterForm = () => {
             },
             isEmail: {
                 message: "Email введен некорректно"
+            }
+        },
+        name: {
+            isRequired: {
+                message: "Имя обязательно для заполнения"
+            },
+            min: {
+                message: "Имя должно состоять минимум из 3 символов",
+                value: 3
             }
         },
         password: {
@@ -97,7 +105,7 @@ const RegisterForm = () => {
         }
 
         try {
-            await singUp(newData)
+            await signUp(newData)
             history.push("/")
         } catch (error) {
             setErrors(error)
@@ -112,6 +120,13 @@ const RegisterForm = () => {
                 value={data.email}
                 onChange={handleChange}
                 error={errors.email}
+            />
+            <TextField
+                label="Имя"
+                name="name"
+                value={data.name}
+                onChange={handleChange}
+                error={errors.name}
             />
             <TextField
                 label="Пароль"
@@ -144,6 +159,7 @@ const RegisterForm = () => {
             <MultiSelectField
                 options={qualitiesList}
                 onChange={handleChange}
+                defaultValue={data.qualities}
                 name="qualities"
                 label="Выберите ваши качества"
             />
